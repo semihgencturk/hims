@@ -1,13 +1,10 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import styled from 'styled-components';
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import styled from "styled-components";
 
 import LandingPage from './pages/LandingPage';
 import AdminPage from './pages/AdminPage';
-import DoctorPage from './pages/DoctorPage';
-import PatientPage from './pages/PatientPage';
-
-import Navbar from './components/main/navbar';
+import Navbar from './pages/components/navbar';
 
 import PatientsList from './components/patient/PatientsList';
 import AddPatient from './components/patient/AddPatient';
@@ -71,19 +68,19 @@ import TestDetails from './components/test/TestDetails';
 
 const AppContainer = styled.div`
   font-family: 'Arial', sans-serif;
-  background-color: #f8f9fa;
+  background-color: #FEFAF6;
   padding: 20px;
   
   body {
     margin: 0;
     padding: 0;
     font-family: 'Arial', sans-serif;
-    background-color: #f8f9fa;
+    background-color: #FEFAF6;
   }
 
   h2 {
     margin-bottom: 20px;
-    color: #343a40;
+    color: #0033A0;
     text-align: center;
   }
 
@@ -94,8 +91,8 @@ const AppContainer = styled.div`
   }
 
   th {
-    background-color: #343a40;
-    color: #fff;
+    background-color: #FFC72C;
+    color: #0033A0;
     padding: 10px;
     border: 1px solid #dee2e6;
   }
@@ -109,33 +106,45 @@ const AppContainer = styled.div`
   button {
     margin: 5px;
     padding: 5px 10px;
-    background-color: green;
-    color: #fff;
+    background-color: #EFEFEF;
+    color: #0033A0;
     border: none;
     border-radius: 4px;
     cursor: pointer;
 
     &:hover {
-      background-color: #c82333;
+      background-color: #FF9047;
+      color: #001F54;
     }
   }
 
   a {
-    text-decoration: none;
-    color: inherit;
+    margin: 5px;
+    padding: 5px 10px;
+    background-color: #EFEFEF;
+    color: #0033A0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #FF9047;
+      color: #001F54;
+    }
   }
 
   .add-button {
     display: inline-block;
     margin-bottom: 20px;
     padding: 10px 20px;
-    background-color: #28a745;
-    color: #fff;
+    background-color: #1E0342;
+    color: #0033A0;
     text-decoration: none;
     border-radius: 4px;
 
     &:hover {
-      background-color: #218838;
+      background-color: #FFC72C;
+      color: #001F54;
     }
   }
 `;
@@ -149,12 +158,10 @@ function App() {
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/admin" element={<AdminPage />} />
-            <Route path="/doctor" element={<DoctorPage />} />
-            <Route path="/patient" element={<PatientPage />} />
             <Route path="/patients" element={<PatientsList />} />
             <Route path="/patients/add" element={<AddPatient />} />
             <Route path="/edit/:id" element={<EditPatient />} />
-            <Route path="/patient/:id" element={<PatientDetails />} />
+            <Route path="/patients/:id" element={<PatientDetails />} />
             <Route path="/hospitals" element={<HospitalsList />} />
             <Route path="/hospitals/add" element={<AddHospital />} />
             <Route path="/hospitals/edit/:id" element={<EditHospital />} />

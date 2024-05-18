@@ -7,7 +7,7 @@ const AdminContainer = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  background-color: #f8f9fa;
+  background-color: #FEFAF6;
 `;
 
 const Title = styled.h2`
@@ -32,7 +32,7 @@ const StyledButton = styled(Link)`
   padding: 10px 20px;
   margin: 5px;
   color: #fff;
-  background-color: #007bff;
+  background-color: #E1F7F5;
   border: none;
   border-radius: 5px;
   text-decoration: none;

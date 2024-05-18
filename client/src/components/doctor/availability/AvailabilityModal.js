@@ -121,13 +121,15 @@ const AvailabilityModal = ({ isOpen, onRequestClose, doctorId, doctorFirstName, 
 
   const handleDeleteAvailability = async (availability_datetime) => {
     try {
-      await axios.delete(`http://localhost:5001/doctors/availabilities/${doctorId}/${availability_datetime}`);
+      const encodedDateTime = encodeURIComponent(availability_datetime);
+      await axios.delete(`http://localhost:5001/doctors/availabilities/${doctorId}/${encodedDateTime}`);
       fetchAvailabilities();
     } catch (err) {
       console.error(err.message);
       alert('Failed to delete availability. Please try again.');
     }
   };
+  
 
   return (
     <Modal

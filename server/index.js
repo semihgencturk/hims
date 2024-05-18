@@ -85,16 +85,19 @@ app.delete("/patients/:id", async (req, res) => {
     }
 });
 
-// Get all second languages for a patient
-app.get("/patients/:id/second-languages", async (req, res) => {
+app.get('/patients/:id/second_languages', async (req, res) => {
+    const { id } = req.params;
     try {
-        const { id } = req.params;
-        const secondLanguages = await pool.query("SELECT second_language FROM patient_second_language WHERE patient_id = $1", [id]);
-        res.json(secondLanguages.rows);
+      const result = await pool.query(
+        'SELECT second_language FROM patient_second_language WHERE patient_id = $1',
+        [id]
+      );
+      res.json(result.rows);
     } catch (err) {
-        console.error(err.message);
+      console.error(err.message);
+      res.status(500).send('Server error');
     }
-});
+  });  
 
 // Add a second language for a patient
 app.post("/patients/:id/second-languages", async (req, res) => {
@@ -331,7 +334,7 @@ app.delete("/doctors/:id", async (req, res) => {
 
 // Doctor Availability routes
 
-// Get all availabilities for a doctor
+// Get availabilities for a doctor
 app.get("/doctors/availabilities/:doctor_id", async (req, res) => {
     try {
         const { doctor_id } = req.params;
@@ -386,13 +389,15 @@ app.put("/doctors/availabilities/:doctor_id/:availability_datetime", async (req,
 app.delete("/doctors/availabilities/:doctor_id/:availability_datetime", async (req, res) => {
     try {
         const { doctor_id, availability_datetime } = req.params;
+        const parsedDateTime = decodeURIComponent(availability_datetime);
         await pool.query(
             "DELETE FROM doctor_availability WHERE doctor_id = $1 AND availability_datetime = $2",
-            [doctor_id, availability_datetime]
+            [doctor_id, parsedDateTime]
         );
         res.json("Availability was deleted!");
     } catch (err) {
         console.error(err.message);
+        res.status(500).send('Server error');
     }
 });
 
@@ -513,66 +518,38 @@ app.put("/expertises/:id", async (req, res) => {
 
 /* =========================================== APPOINTMENTS =========================================== */
 
-// Get all appointments
-app.get("/appointments", async (req, res) => {
+// Get doctors by clinic ID
+app.get('/clinics/:id/doctors', async (req, res) => {
+    const { id } = req.params;
     try {
-        const allAppointments = await pool.query("SELECT * FROM appointment");
-        res.json(allAppointments.rows);
+      const result = await pool.query('SELECT * FROM doctor WHERE doctor_id IN (SELECT doctor_id FROM clinic_doctor WHERE clinic_id = $1)', [id]);
+      res.json(result.rows);
     } catch (err) {
-        console.error(err.message);
+      console.error(err.message);
+      res.status(500).send('Server error');
     }
-});
-
-// Get a single appointment by ID
-app.get("/appointments/:id", async (req, res) => {
+  });
+  
+// Add an appointment
+app.post('/appointments', async (req, res) => {
+    const { app_datetime, app_type, app_status, note, patient_id, hospital_id, clinic_id, doctor_id } = req.body;
     try {
-        const { id } = req.params;
-        const appointment = await pool.query("SELECT * FROM appointment WHERE appointment_id = $1", [id]);
-        res.json(appointment.rows[0]);
+      const result = await pool.query(
+        'INSERT INTO appointment (app_datetime, app_type, app_status, note) VALUES ($1, $2, $3, $4) RETURNING *',
+        [app_datetime, app_type, app_status, note]
+      );
+      const appointment_id = result.rows[0].appointment_id;
+      await pool.query(
+        'INSERT INTO patient_doctor_appointment (patient_id, doctor_id, appointment_id) VALUES ($1, $2, $3)',
+        [patient_id, doctor_id, appointment_id]
+      );
+      res.json(result.rows[0]);
     } catch (err) {
-        console.error(err.message);
+      console.error(err.message);
+      res.status(500).send('Server error');
     }
-});
-
-// Create a new appointment
-app.post("/appointments", async (req, res) => {
-    try {
-        const { app_datetime, app_type, app_status, note, patient_id, hospital_id } = req.body;
-        const newAppointment = await pool.query(
-            "INSERT INTO appointment (app_datetime, app_type, app_status, note, patient_id, hospital_id) VALUES($1, $2, $3, $4, $5, $6) RETURNING *",
-            [app_datetime, app_type, app_status, note, patient_id, hospital_id]
-        );
-        res.json(newAppointment.rows[0]);
-    } catch (err) {
-        console.error(err.message);
-    }
-});
-
-// Update an appointment
-app.put("/appointments/:id", async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { app_datetime, app_type, app_status, note, patient_id, hospital_id } = req.body;
-        await pool.query(
-            "UPDATE appointment SET app_datetime = $1, app_type = $2, app_status = $3, note = $4, patient_id = $5, hospital_id = $6 WHERE appointment_id = $7",
-            [app_datetime, app_type, app_status, note, patient_id, hospital_id, id]
-        );
-        res.json("Appointment was updated!");
-    } catch (err) {
-        console.error(err.message);
-    }
-});
-
-// Delete an appointment
-app.delete("/appointments/:id", async (req, res) => {
-    try {
-        const { id } = req.params;
-        await pool.query("DELETE FROM appointment WHERE appointment_id = $1", [id]);
-        res.json("Appointment was deleted!");
-    } catch (err) {
-        console.error(err.message);
-    }
-});
+  });
+  
 
 /* =========================================== VISITS =========================================== */
 
@@ -1080,8 +1057,6 @@ app.delete("/prescriptions/:id/medicines/:medicine_code", async (req, res) => {
         console.error(err.message);
     }
 });
-
- /* =========================================== INSERTIONS MOCK DATA =========================================== */
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {

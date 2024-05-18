@@ -28,7 +28,7 @@ const PatientsList = () => {
   const handleDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:5001/patients/${id}`);
-      fetchPatients(); // Refresh the list of patients
+      fetchPatients();
     } catch (err) {
       console.error(err.message);
     }
@@ -84,7 +84,7 @@ const PatientsList = () => {
               <td>{patient.first_name}</td>
               <td>{patient.last_name}</td>
               <td>
-                <Link to={`/patient/${patient.patient_id}`}>View</Link>
+                <Link to={`/patients/${patient.patient_id}`}>View</Link>
                 <Link to={`/edit/${patient.patient_id}`}>Edit</Link>
                 <button onClick={() => handleDelete(patient.patient_id)}>Delete</button>
                 <button onClick={() => openTestModal(patient.patient_id)}>Manage Tests</button>

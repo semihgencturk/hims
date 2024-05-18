@@ -4,16 +4,27 @@ import { useParams } from 'react-router-dom';
 
 const PatientDetails = () => {
   const [patient, setPatient] = useState({});
+  const [secondLanguages, setSecondLanguages] = useState([]);
   const { id } = useParams();
 
   useEffect(() => {
     fetchPatient();
+    fetchSecondLanguages();
   }, []);
 
   const fetchPatient = async () => {
     try {
       const response = await axios.get(`http://localhost:5001/patients/${id}`);
       setPatient(response.data);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+  const fetchSecondLanguages = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5001/patients/${id}/second_languages`);
+      setSecondLanguages(response.data);
     } catch (err) {
       console.error(err.message);
     }
@@ -29,6 +40,7 @@ const PatientDetails = () => {
       <p><strong>Date of Birth:</strong> {patient.date_of_birth}</p>
       <p><strong>Gender:</strong> {patient.gender}</p>
       <p><strong>Native Language:</strong> {patient.native_language}</p>
+      <p><strong>Second Languages:</strong> {secondLanguages.map(lang => <span key={lang.second_language}>{lang.second_language} </span>)}</p>
       <p><strong>Cell Phone:</strong> {patient.cell_phone}</p>
       <p><strong>Landline Phone:</strong> {patient.landline_phone}</p>
       <p><strong>Email:</strong> {patient.email}</p>
