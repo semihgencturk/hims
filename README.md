@@ -1,7 +1,7 @@
 # HOSPITAL INFORMATION MANAGEMENT SYSTEM 
 
 - I developed this full-stack website as a grauditon project in my university.
-- The project advisor is Prof. [Ayla Sayli](https://avesis.yildiz.edu.tr/sayli).
+- The project advisor is [Prof. Ayla Sayli](https://avesis.yildiz.edu.tr/sayli).
 
 ## About The Project
 
