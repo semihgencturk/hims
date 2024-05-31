@@ -7,9 +7,9 @@
 
 - It is a Hospital Information Management System that provides some features to users such as admin, doctor and patient.
 - To accomplish the project, the following tasks have finished:
-  - Examined the smilar works and decided the scope of project 
-  - Analyzed and Designed Database (ER Modelling, EER Modelling, Mapping Operations, Normalizations are done)
-  - Implementation of database, backend and frontend
+  - Examined the smilar works and decided the scope of project. 
+  - Analyzed and Designed Database (ER Modelling, EER Modelling, Mapping Operations, Normalizations are done).
+  - Implementation of database, backend and frontend.
 
 ## Used Technologies
 
